@@ -51,7 +51,7 @@ UC 网盘曾提供书签导出功能，后来悄然取消，改为只能通过 U
           'x-csrf-token': csrfToken,
           'Accept': 'application/json, text/plain, */*'
         },
-        body: JSON.stringify({ cur_page: currentPage, type: 'phone', dir_guid: 0 })
+        body: JSON.stringify({ cur_page: currentPage, type: 'phone', dir_guid: 0 })  //其中dir_guid可能需要修改
       });
       const json = await res.json();
       if (json.code !== 0 || !json.data || !json.data.list || json.data.list.length === 0) break;
@@ -85,8 +85,12 @@ UC 网盘曾提供书签导出功能，后来悄然取消，改为只能通过 U
   console.log(`导出成功，共 ${allItems.length} 条书签，已下载 JSON 文件`);
 })();
 ```
+注意：上述代码只能自动处理默认文件夹（根目录）中保存的书签。若存在子文件夹，需要保持在书签页面，按 F12 打开开发者工具，切换到 Network（网络）标签，在筛选框中输入`listdata`，随后点进目标子文件夹，在下面的名称中找到新出现的listdata，从 Payload（负载） 中获取 `dir_guid` 信息，用获取到的 `dir_guid` 的值替换上面代码中 `dir_guid` 的值。注意，引号也要一起复制过去，例如
+```
+body: JSON.stringify({ cur_page: currentPage, type: 'phone', dir_guid: "abcdexxxxxxxxx" })
+```
 
-### 转换脚本（可选）
+### 转换脚本
 
 ```javascript
 // 运行后选择 JSON 文件，自动下载 HTML
